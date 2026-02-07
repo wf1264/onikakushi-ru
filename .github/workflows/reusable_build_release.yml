@@ -1,0 +1,57 @@
+name: Build and Publish translation release
+
+on:
+  workflow_call:
+
+jobs:
+  dll_build:
+    name: Build and Publish translation release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+      - name: Force git to use CRLF (on ubuntu runner, will checkout as LF otherwise)
+        run: git config --global core.autocrlf true # Forces LF on the server to convert to CRLF locally
+
+      - name: Checkout the script repository
+        uses: actions/checkout@v4
+
+      - name: Run Release Script
+        id: run_release
+        run: |
+          curl -OJ https://raw.githubusercontent.com/07th-mod/higurashi_release/master/deploy_higurashi/translations/ru/deploy_higurashi.py
+          python deploy_higurashi.py
+          rm deploy_higurashi.py
+
+      # Publish a release
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') # only publish tagged commits
+        with:
+          files: |
+            release/*.7z
+          draft: true
+          name: ${{ steps.run_release.outputs.release_name }} # This output is set in the 'deploy_higurashi.py' script above
+          body: |
+            ## Install/Update Instructions
+
+            We **HIGHLY** recommend using [our installer](https://github.com/07th-mod/python-patcher/releases/latest) to install the mod automatically, instead of the files on this page.
+
+            ----
+
+            **DO NOT USE THE FILES BELOW UNLESS YOU REALLY WANT TO INSTALL MANUALLY, AND HAVE READ THE MANUAL INSTALL INSTRUCTIONS**
+
+            **THIS PAGE ONLY CONTAINS ONE PART OF THE PATCH. YOU NEED OTHER FILES FOR THE MOD TO WORK**
+
+            If you really want to install manually, follow the [manual install instructions](https://07th-mod.com/wiki/Higurashi/Manual-Installation/).
+
+            ----
+
+            # Changelog
+
+            - [PUT CHANGELOG ITEMS HERE]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
