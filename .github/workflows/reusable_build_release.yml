@@ -34,6 +34,9 @@ jobs:
         run: msbuild /p:Configuration=ScriptCompiler
         working-directory: ./dll/
 
+      - name: Move bin/ folder out of dll/ folder so the script can access it easier (bin/ScriptCompiler/HigurashiScriptCompiler[.exe])
+        run: mv ./dll/bin/ .
+
       ## NOTE: The actual script compilation (generating *.mg in CompiledUpdateScripts folder)
       # happens in "Run Release Script" - the python script should compile scripts automatically
       # when it sees the script compiler executable.
