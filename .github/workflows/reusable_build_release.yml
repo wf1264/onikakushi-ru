@@ -9,7 +9,7 @@ on:
 jobs:
   dll_build:
     name: Build and Publish translation release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 #Used to be 'ubuntu-latest', but 'ubuntu-latest' doesn't have msbuild installed.
     permissions:
       contents: write
     strategy:
