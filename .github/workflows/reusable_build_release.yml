@@ -2,7 +2,10 @@ name: Build and Publish translation release
 
 on:
   workflow_call:
-
+    inputs:
+      higrashi-assembly-ref:
+        required: true
+        type: string
 jobs:
   dll_build:
     name: Build and Publish translation release
@@ -18,6 +21,23 @@ jobs:
 
       - name: Checkout the script repository
         uses: actions/checkout@v4
+
+      ############### Prepare script compiler ###############
+      - name: Checkout the higurashi-assembly (DLL) repository
+        uses: actions/checkout@v4
+        with:
+          repository: 07th-mod/higurashi-assembly
+          ref: ${{ inputs.higrashi-assembly-ref }}
+          path: ./dll/
+
+      - name: Compile standalone Higurashi Script Compiler
+        run: msbuild /p:Configuration=ScriptCompiler
+        working-directory: ./dll/
+
+      ## NOTE: The actual script compilation (generating *.mg in CompiledUpdateScripts folder)
+      # happens in "Run Release Script" - the python script should compile scripts automatically
+      # when it sees the script compiler executable.
+      ############### END Prepare script compiler ###############
 
       - name: Run Release Script
         id: run_release
