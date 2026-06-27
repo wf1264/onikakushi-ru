@@ -3,7 +3,7 @@ name: Build and Publish translation release
 on:
   workflow_call:
     inputs:
-      higrashi-assembly-ref:
+      higurashi-assembly-ref:
         required: true
         type: string
 jobs:
@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 07th-mod/higurashi-assembly
-          ref: ${{ inputs.higrashi-assembly-ref }}
+          ref: ${{ inputs.higurashi-assembly-ref }}
           path: ./dll/
 
       - name: Compile standalone Higurashi Script Compiler

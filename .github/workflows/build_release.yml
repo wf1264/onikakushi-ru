@@ -9,4 +9,4 @@ jobs:
   call-workflow:
     uses: wf1264/onikakushi-ru/.github/workflows/reusable_build_release.yml@main
     with:
-      higrashi-assembly-ref: oni-mod
+      higurashi-assembly-ref: oni-mod
